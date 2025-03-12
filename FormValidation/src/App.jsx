@@ -3,43 +3,55 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 import Users from "./components/Users";
 
 const App = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
+  const [error, setError] = useState("");
   const [users, setUsers] = useState([]);
+
+  const handleChanges = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const submitHandler = (evt) => {
     evt.preventDefault();
 
-    if (password.length < 8) {
+    if (formData.password.length < 8) {
       setError("Password must be at least 8 characters");
       return;
     }
 
-    if (password != confirmPassword) {
+    if (formData.password != formData.confirmPassword) {
       setError("Password and Confirm Password must be same");
       return;
     }
 
-    if (!/[!@#$%^&*,.]/.test(password)) {
+    if (!/[!@#$%^&*,.]/.test(formData.password)) {
       setError("Password must be contain a special character");
       return;
     }
-    if (!/[A-Z]/.test(password)) {
+    if (!/[A-Z]/.test(formData.password)) {
       setError("Password must be contain a capital letter");
       return;
     }
+    
+    setUsers([...users, formData]);
 
-    setFullName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
     setError("");
-
-    setUsers([...users, { fullName, email, password }]);
+    setFormData({
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
 
     toast.success("Login Successful!! ✌🏻", {
       position: "top-right",
@@ -69,30 +81,27 @@ const App = () => {
               type="text"
               required
               placeholder="Enter your name"
-              value={fullName}
-              onChange={(e) => {
-                setFullName(e.target.value);
-              }}
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChanges}
             />
             <input
               className="w-[75%] border-2 px-4 py-2 rounded-lg outline-none border-blue-400 text-lg focus:border-blue-600 transition duration-300"
               type="email"
               required
               placeholder="Enter your email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              name="email"
+              value={formData.email}
+              onChange={handleChanges}
             />
             <input
               className="w-[75%] border-2 px-4 py-2 rounded-lg outline-none border-blue-400 text-lg focus:border-blue-600 transition duration-300"
               type="password"
               required
               placeholder="Enter your password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              name="password"
+              value={formData.password}
+              onChange={handleChanges}
             />
 
             <input
@@ -100,10 +109,9 @@ const App = () => {
               type="password"
               required
               placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-              }}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChanges}
             />
 
             {error && (
@@ -121,8 +129,8 @@ const App = () => {
         </div>
       </div>
 
-      {users.map((user) => {
-        return <Users users={user} />;
+      {users.map((user, index) => {
+        return <Users key={index} users={user} />;
       })}
     </>
   );
