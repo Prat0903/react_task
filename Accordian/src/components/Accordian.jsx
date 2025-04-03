@@ -19,7 +19,7 @@ const Accordian = () => {
     setMultiple(cpyMultiple);
   }
 
-  console.log(multiple);
+  console.log(selected);
 
   return (
     <div className="w-full h-screen flex items-center">
@@ -44,7 +44,7 @@ const Accordian = () => {
                   }
                 >
                   <h3 className="text-lg font-semibold">{item.question}</h3>
-                  {selected === item.id ? (
+                  {selected === item.id || multiple.indexOf(item.id) !== -1 ? (
                     <span className="font-semibold">x</span>
                   ) : (
                     <span className="font-semibold">+</span>
